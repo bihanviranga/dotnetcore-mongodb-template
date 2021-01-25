@@ -11,10 +11,12 @@ namespace dotnetcore_mongodb_template.Controllers
     public class StudentsController : ControllerBase
     {
         private readonly StudentService _studentService;
+        private readonly CourseService _courseService;
 
-        public StudentsController(StudentService service)
+        public StudentsController(StudentService eService, CourseService cService)
         {
-            _studentService = service;
+            _studentService = eService;
+            _courseService = cService;
         }
 
         [HttpGet]
@@ -32,12 +34,29 @@ namespace dotnetcore_mongodb_template.Controllers
             {
                 return NotFound();
             }
+            if (student.Courses.Count > 0)
+            {
+                var coursesList = new List<Course>();
+                foreach (var courseId in student.Courses)
+                {
+                    var course = await _courseService.GetByIdAsync(courseId);
+                    if (course != null)
+                    {
+                        coursesList.Add(course);
+                    }
+                }
+                student.CourseList = coursesList;
+            }
             return Ok(student);
         }
 
         [HttpPost]
         public async Task<ActionResult<Student>> Create(Student student)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest();
+            }
             await _studentService.CreateAsync(student);
             return Ok(student);
         }
@@ -45,6 +64,10 @@ namespace dotnetcore_mongodb_template.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(string id, Student updatedStudent)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest();
+            }
             var queriedStudent = await _studentService.GetByIdAsync(id);
             if (queriedStudent == null)
             {
