@@ -1,16 +1,11 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using dotnetcore_mongodb_template.Interfaces;
+using dotnetcore_mongodb_template.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-
+using Microsoft.Extensions.Options;
 namespace dotnetcore_mongodb_template
 {
     public class Startup
@@ -25,6 +20,10 @@ namespace dotnetcore_mongodb_template
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.Configure<SchoolDatabaseSettings>(
+                    Configuration.GetSection(nameof(SchoolDatabaseSettings)));
+            services.AddSingleton<ISchoolDatabaseSettings>(provider =>
+                    provider.GetRequiredService<IOptions<SchoolDatabaseSettings>>().Value);
             services.AddControllers();
         }
 
