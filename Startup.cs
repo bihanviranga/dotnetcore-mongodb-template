@@ -1,11 +1,13 @@
 using dotnetcore_mongodb_template.Interfaces;
 using dotnetcore_mongodb_template.Models;
+using dotnetcore_mongodb_template.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
+
 namespace dotnetcore_mongodb_template
 {
     public class Startup
@@ -24,6 +26,10 @@ namespace dotnetcore_mongodb_template
                     Configuration.GetSection(nameof(SchoolDatabaseSettings)));
             services.AddSingleton<ISchoolDatabaseSettings>(provider =>
                     provider.GetRequiredService<IOptions<SchoolDatabaseSettings>>().Value);
+
+            services.AddScoped<StudentService>();
+            services.AddScoped<CourseService>();
+
             services.AddControllers();
         }
 
