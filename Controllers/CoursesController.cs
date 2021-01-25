@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using dotnetcore_mongodb_template.Models;
 using dotnetcore_mongodb_template.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -37,6 +38,10 @@ namespace dotnetcore_mongodb_template.Controllers
         [HttpPost]
         public async Task<ActionResult<Course>> Create(Course course)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest();
+            }
             await _courseService.CreateAsync(course);
             return Ok(course);
         }
@@ -44,6 +49,10 @@ namespace dotnetcore_mongodb_template.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(string id, Course updatedCourse)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest();
+            }
             var queriedCourse = await _courseService.GetByIdAsync(id);
             if (queriedCourse == null)
             {

@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using dotnetcore_mongodb_template.Interfaces;
+using dotnetcore_mongodb_template.Models;
 using MongoDB.Driver;
 
 namespace dotnetcore_mongodb_template.Services
